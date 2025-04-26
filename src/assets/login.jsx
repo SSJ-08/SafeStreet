@@ -1,50 +1,39 @@
-// // import React from 'react';
-// // import { Link ,useNavigate} from 'react-router-dom';
-// // const Login = ()=>{
-// //     const navigate = useNavigate();
-// //     return(
-// //         <>
-// //         <form>
-// //         <div className='login-container'>
-// //             <div className='login'>
-// //                 <div className='title'><h1>LOGIN</h1></div>
-// //                 <div className='inputs'>UserName: </div>
-// //                 <input type='text' placeholder='Enter username' required/><br/>
-// //                 <div className='inputs'>Password: </div>
-// //                 <input type='password' placeholder='Enter password' required/>
-// //                     <div className="fplink">
-// //                         Forgot your password?{' '}
-// //                         <Link to="/forgotpassword">Click here to reset it!</Link>  
-                    
-// //                     </div>
-                    
-// //                     <button onClick={() => navigate("/home")}className="btn">Login</button>
-// //                     <div className="register">
-// //                         New User?{' '}
-// //                         <Link to="/register">Register</Link>  
-                    
-                    
-// //                     </div>
-// //                 </div>
-// //         </div>
-// //         </form>
-// //         </>
-// //     )
-// // }
-// // export default Login;
-
-
-
-// import React from 'react';
+// import React, { useState } from 'react';
 // import { Link, useNavigate } from 'react-router-dom';
+
 
 // const Login = () => {
 //   const navigate = useNavigate();
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault(); // Prevent default form submission
-//     // Add validation or API call logic here if needed
-//     navigate("/home");  // Navigate after validation passes
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [error, setError] = useState("");
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       const response = await fetch("http://localhost:5000/api/login", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ email, password }),
+//       });
+
+//       const data = await response.json();
+
+//       if (response.ok) {
+//         alert("Login successful!");
+//         localStorage.setItem("userEmail", email);
+//         navigate("/otp");
+//       } else {
+//         setError(data.message || "Login failed");
+//       }
+//     } catch (err) {
+//       console.error("Login error:", err);
+//       setError("Something went wrong. Please try again.");
+//     }
 //   };
 
 //   return (
@@ -54,22 +43,34 @@
 //           <div className='login'>
 //             <div className='title'><h1>LOGIN</h1></div>
 
-//             <div className='inputs'>UserName: </div>
-//             <input type='text' placeholder='Enter username' required /><br />
+//             <div className='inputs'>Email: </div>
+//             <input
+//               type='email'
+//               placeholder='Enter your email'
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               required
+//             /><br/>
 
 //             <div className='inputs'>Password: </div>
-//             <input type='password' placeholder='Enter password' required />
+//             <input
+//               type='password'
+//               placeholder='Enter password'
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               required
+//             />
 
 //             <div className="fplink">
-//               Forgot your password?{' '}
-//               <Link to="/forgotpassword">Click here to reset it!</Link>
+//               Forgot your password? <Link to="/forgotpassword">Click here to reset it!</Link>
 //             </div>
+
+//             {error && <p className="error-message">{error}</p>}
 
 //             <button type="submit" className="btn">Login</button>
 
 //             <div className="register">
-//               New User?{' '}
-//               <Link to="/register">Register</Link>
+//               New User? <Link to="/register">Register</Link>
 //             </div>
 //           </div>
 //         </div>
@@ -82,9 +83,10 @@
 
 
 
+
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import "./login.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -97,7 +99,8 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      // Step 1: Try to login
+      const loginResponse = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,14 +108,29 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const loginData = await loginResponse.json();
 
-      if (response.ok) {
-        alert("Login successful!");
-        localStorage.setItem("userEmail", email);
-        navigate("/home");
+      if (loginResponse.ok) {
+        // Step 2: If login successful, send OTP
+        const otpResponse = await fetch("http://localhost:5000/api/send-otp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const otpData = await otpResponse.json();
+
+        if (otpResponse.ok) {
+          alert("Login successful! OTP sent to your email.");
+          localStorage.setItem("userEmail", email);
+          navigate("/otp");
+        } else {
+          setError(otpData.message || "Failed to send OTP");
+        }
       } else {
-        setError(data.message || "Login failed");
+        setError(loginData.message || "Login failed");
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -127,7 +145,7 @@ const Login = () => {
           <div className='login'>
             <div className='title'><h1>LOGIN</h1></div>
 
-            <div className='inputs'>Email: </div>
+            <div className='inputs'>Email:</div>
             <input
               type='email'
               placeholder='Enter your email'
@@ -136,7 +154,7 @@ const Login = () => {
               required
             /><br/>
 
-            <div className='inputs'>Password: </div>
+            <div className='inputs'>Password:</div>
             <input
               type='password'
               placeholder='Enter password'
@@ -164,3 +182,4 @@ const Login = () => {
 };
 
 export default Login;
+

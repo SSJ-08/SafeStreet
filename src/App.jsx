@@ -9,7 +9,7 @@ import Login from "./assets/login";
 import ForgotPassword from "./assets/forgotpassword";
 import Register from "./assets/register";
 import Contact from "./assets/contact";
-
+import Otp from "./assets/otp";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -53,6 +53,7 @@ function App() {
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/register" element={<Register />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/otp" element={<Otp />} />
           </Routes>
         </main>
       </div>

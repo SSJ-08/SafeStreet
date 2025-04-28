@@ -189,19 +189,32 @@
 
 
 
+
+
+
 import React, { useState } from "react";
-import "../App.css";
 import { Link, useNavigate } from "react-router-dom";
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import "../App.css";
 
 const Register = () => {
   const navigate = useNavigate();
 
-  // Added state for name and email
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [error, setError] = useState("");
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -233,6 +246,12 @@ const Register = () => {
     }
   };
 
+  const handleConfirmPasswordChange = (e) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    setError(value !== password ? "Passwords do not match!" : "");
+  };
+
   return (
     <div className="register-container">
       <div className="register-card">
@@ -258,29 +277,61 @@ const Register = () => {
               required
             />
           </div>
+
           <div className="input-group">
             <label>Password:</label>
-            <input
-              type="password"
-              placeholder="Create a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingRight: '30px' }}
+              />
+              <span
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '15px',
+                  top: '40%',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                }}
+              >
+                {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+              </span>
+            </div>
           </div>
+
           <div className="input-group">
             <label>Confirm Password:</label>
-            <input
-              type="password"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                setError(e.target.value !== password ? "Passwords do not match!" : "");
-              }}
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={confirmPasswordVisible ? 'text' : 'password'}
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                required
+                style={{ paddingRight: '30px' }}
+              />
+              <span
+                onClick={toggleConfirmPasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '15px',
+                  top: '40%',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                }}
+              >
+                {confirmPasswordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+              </span>
+            </div>
           </div>
+
           <p className="fplink">
             Already have an account? <Link to="/login">Login</Link>
           </p>

@@ -81,19 +81,22 @@
 
 // export default Login;
 
-
-
-
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import "../App.css";
 const Login = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
+  
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,6 +141,9 @@ const Login = () => {
     }
   };
 
+  
+
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -154,14 +160,30 @@ const Login = () => {
               required
             /><br/>
 
-            <div className='inputs'>Password:</div>
-            <input
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className='inputs'>Password: </div>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingRight: '30px' }}
+              />
+              <span
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '15px',
+                  top: '40%',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                }}
+              >
+                {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+              </span>
+            </div>
 
             <div className="fplink">
               Forgot your password? <Link to="/forgotpassword">Click here to reset it!</Link>
@@ -182,4 +204,9 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
 

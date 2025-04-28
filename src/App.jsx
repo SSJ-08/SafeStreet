@@ -11,6 +11,8 @@ import Register from "./assets/register";
 import Contact from "./assets/contact";
 import Otp from "./assets/otp";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import EmailHistory from "./assets/EmailHistory";
+import AllQueries from "./assets/queries";
 
 function App() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -54,6 +56,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/otp" element={<Otp />} />
+            <Route path="/EmailHistory" element={<EmailHistory />} />
+            <Route path="/queries" element={<AllQueries />} />
           </Routes>
         </main>
       </div>

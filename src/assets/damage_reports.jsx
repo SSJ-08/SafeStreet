@@ -131,7 +131,7 @@ const Damage_Reports = () => {
           </table>
         </div>
 
-        {/* ✅ Map Component */}
+       
         <div className="map-container">
           <MapContainer center={[20.5937, 78.9629]} zoom={5} scrollWheelZoom={false} className="leaflet-container">
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

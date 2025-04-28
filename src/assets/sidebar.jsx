@@ -21,7 +21,7 @@ const Sidebar = ({ openSidebarToggle, toggleSidebar }) => {
 
       <ul className="sidebar-list" onClick={toggleSidebar}>
         <li className="sidebar-list-item">
-          <Link to="/">
+          <Link to="home">
             <MdSpaceDashboard className="icon" /> Dashboard
           </Link>
         </li>

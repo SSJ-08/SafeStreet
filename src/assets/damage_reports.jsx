@@ -3,9 +3,32 @@ import "../App.css";
 import "leaflet/dist/leaflet.css"; 
 import { MapContainer,TileLayer,Marker,Popup } from "react-leaflet";
 import { useLocation } from "react-router-dom";
+import jsPDF from "jspdf";
+
+
 console.log("DamageReports Component Loaded!");
 
 
+const generatePDF = (report) => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text("SafeStreet Damage Report Summary", 20, 20);
+
+  doc.setFontSize(12);
+  doc.text(`Report ID: ${report.id}`, 20, 40);
+  doc.text(`Location: ${report.location}`, 20, 50);
+  doc.text(`Severity: ${report.severity}`, 20, 60);
+  doc.text(`Status: ${report.status}`, 20, 70);
+  doc.text(`Date: ${report.date}`, 20, 80);
+
+  const summary = `This report highlights damage at ${report.location} with a severity level of ${report.severity}. The case is currently marked as ${report.status}. Necessary actions will be taken by the relevant authority.`;
+
+  doc.text("Summary:", 20, 100);
+  doc.text(doc.splitTextToSize(summary, 170), 20, 110);
+
+  doc.save(`Damage_Report_${report.id}.pdf`);
+};
 
 
 
@@ -141,16 +164,12 @@ const Damage_Reports = () => {
               </td>
 
               <td>
-                     <a
-                      href="/SafeStreet_Report_Mumbai.pdf"
-                      download={`Damage_Report_${report.id}.pdf`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="action-button download-pdf-button">
-                        Download Summary Report
-                      </button>
-                    </a>
+              <button
+                onClick={() => generatePDF(report)}
+                className="action-button download-pdf-button"
+              >
+                Download Summary Report
+              </button>
               </td>
                    
 

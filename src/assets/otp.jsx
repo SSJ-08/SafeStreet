@@ -59,7 +59,7 @@ import { useNavigate } from "react-router-dom";
 
 const Otp = () => {
   const [otp, setOtp] = useState("");
-  const [timeLeft, setTimeLeft] = useState(30); // 30 seconds for OTP validity
+  const [timeLeft, setTimeLeft] = useState(60); // 30 seconds for OTP validity
   const [isExpired, setIsExpired] = useState(false);
   const navigate = useNavigate();
   const email = localStorage.getItem("userEmail"); // get saved email
@@ -120,7 +120,7 @@ const Otp = () => {
 
       if (response.ok) {
         alert("New OTP sent to your email.");
-        setTimeLeft(30); // Reset timer
+        setTimeLeft(60); // Reset timer
         setIsExpired(false);
         setOtp(""); // Clear the old OTP input
       } else {
@@ -147,16 +147,31 @@ const Otp = () => {
           disabled={isExpired}
         /><br />
 
-        {!isExpired ? (
+        {/* {!isExpired ? (
           <button type="submit" className="btn">Verify OTP</button>
         ) : (
           <button type="button" className="btn" onClick={handleResendOtp}>
             Resend OTP
           </button>
-        )}
+        )} */}
+        <button type="submit" className="btn" disabled={isExpired}>
+          Verify OTP
+        </button>
+
+        <button
+          type="button"
+          className="btn"
+          onClick={handleResendOtp}
+          disabled={!isExpired}
+          style={{ marginLeft: '10px', backgroundColor: isExpired ? '#28a745' : '#ccc', cursor: isExpired ? 'pointer' : 'not-allowed' }}
+        >
+          Resend OTP
+        </button>
+
+
       </form>
 
-      <div style={{ marginTop: '10px', color: isExpired ? 'red' : 'green' }}>
+      <div style={{ marginTop: '10px', color: isExpired ? 'red' : 'white' }}>
         {isExpired ? "OTP expired. Please resend." : `Time left: 00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`}
       </div>
     </div>

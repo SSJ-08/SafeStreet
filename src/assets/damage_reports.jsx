@@ -115,14 +115,45 @@ const Damage_Reports = () => {
                     {report.status}
                   </td>
                   <td>{report.date}</td>
-                  <td>
+                  {/* <td>
                     {report.status === "Pending" && (
                     <button onClick={() => sendEmailNotification("sravanijanak@gmail.com", report)} disabled={emailSending}>
                     {emailSending ? "Sending..." : "Send Email"}
                   </button>
                   
                     )}
-                  </td>
+                  </td> */}
+
+              <td>
+                {report.status === "Pending" && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
+                    <button
+                      onClick={() => sendEmailNotification("sravanijanak@gmail.com", report)}
+                      disabled={emailSending}
+                      className="action-button send-email-button"
+                    >
+                      {emailSending ? "Sending..." : "Send Email"}
+                    </button>
+
+                    
+                  </div>
+                )}
+              </td>
+
+              <td>
+                     <a
+                      href="/SafeStreet_Report_Mumbai.pdf"
+                      download={`Damage_Report_${report.id}.pdf`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <button className="action-button download-pdf-button">
+                        Download Summary Report
+                      </button>
+                    </a>
+              </td>
+                   
+
 
                 </tr>
                 

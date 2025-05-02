@@ -840,9 +840,8 @@ body {
   background-color: #1931a8;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px #00000033;
 }
-
 
 .contact-form {
     background: #fff;
@@ -1204,4 +1203,111 @@ input::placeholder {
 .queries-table th {
   background-color: #007bff;
   color: white;
+}
+
+
+/* home updated */
+/* Axis tick labels */
+
+.recharts-cartesian-axis-tick text {
+
+  fill: #fff !important;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+}
+
+
+
+/* Y-axis numbers */
+
+.recharts-yAxis .recharts-cartesian-axis-tick-value {
+
+  fill: #fff !important;
+
+}
+
+
+
+/* X-axis labels */
+
+.recharts-xAxis .recharts-cartesian-axis-tick-value {
+
+  fill: #fff !important;
+
+}
+
+
+
+/* Legend text */
+
+.recharts-legend-item-text {
+
+  fill: #fff !important;
+
+}
+
+.recharts-tooltip-wrapper {
+
+  color: #fff !important;
+
+}
+
+
+
+.recharts-default-tooltip {
+
+  background-color: #2c2c3e !important;
+
+  border: 1px solid #444 !important;
+
+  color: #ffffff !important; /* <-- this makes the text white */
+
+}
+
+
+
+.recharts-tooltip-item {
+
+  color: #ffffff !important; /* <-- ensures individual items inside are white */
+
+}
+
+
+
+
+/* Damage Report Action Buttons */
+.action-button {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+
+.download-pdf-button {
+  background-color: #28a745;
+}
+
+.send-email-button {
+  width: 170px;
+  background-color: #007bff;
+}
+
+.action-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.action-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
 }

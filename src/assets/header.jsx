@@ -423,8 +423,120 @@
 
 
 
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom'; 
+// import {
+//   BsFillBellFill,
+//   BsFillEnvelopeFill,
+//   BsPersonCircle,
+//   BsThreeDotsVertical,
+//   BsSearch
+// } from 'react-icons/bs';
+
+// function Header({ OpenSidebar }) {
+//   const navigate = useNavigate(); 
+//   const [showIcons, setShowIcons] = useState(false);
+//   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+//   const [userName, setUserName] = useState("");
+//   const [officialEmail, setOfficialEmail] = useState("");
+
+//   useEffect(() => {
+//     const email = localStorage.getItem("officialEmail");
+//     setOfficialEmail(email);
+
+//     if (!email) {
+//       navigate("/login"); // Redirect if not logged in
+//       return;
+//     }
+
+//     // Fetch user details
+//     fetch("http://localhost:5000/api/user", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ officialEmail: email }),
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         if (data.name) {
+//           setUserName(data.name);
+//         } else {
+//           console.error("No user name found for this email");
+//         }
+//       })
+//       .catch((err) => console.error("Failed to fetch user data", err));
+//   }, [navigate]);
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("officialEmail");
+//     setUserName("");
+//     setOfficialEmail("");
+//     navigate("/login"); // Use navigate for consistency
+//   };
+
+//   return (
+//     <header className='header'>
+//       <div className='header-left'>
+//         <BsSearch className='icon' />
+//         <input type='text' placeholder='Search' />
+//       </div>
+
+//       <div className='header-right desktop-icons'>
+//         <BsFillBellFill className='icon' onClick={() => navigate('/queries')} />
+
+//         {/* MAIL ICON */}
+//         <div 
+//           className='mail-container' 
+//           onClick={() => navigate('/EmailHistory')}  
+//         >
+//           <BsFillEnvelopeFill className='icon' />
+//         </div>
+
+//         {/* PROFILE */}
+//         <div className='profile-container'>
+//           <BsPersonCircle
+//             className='icon profile-icon'
+//             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+//           />
+
+//           {showProfileDropdown && (
+//             <div className='dropdown-card'>
+//               <p className='dropdown-name'>Hello, {userName || 'User'}</p>
+//               <p className='dropdown-email'>{officialEmail || 'Please login'}</p>
+//               <button onClick={handleLogout} className='logout-btn'>Logout</button>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* Mobile menu */}
+//       <div className='mobile-menu'>
+//         <button
+//           className='mobile-menu-button'
+//           onClick={() => setShowIcons(!showIcons)}
+//         >
+//           <BsThreeDotsVertical className='icon' />
+//         </button>
+
+//         {showIcons && (
+//           <div className='mobile-icons-dropdown'>
+//             <BsFillBellFill className='icon' onClick={() => navigate('/queries')} />
+//             <BsFillEnvelopeFill className='icon' onClick={() => navigate('/EmailHistory')} />
+//             <BsPersonCircle 
+//               className='icon' 
+//               onClick={() => setShowProfileDropdown(!showProfileDropdown)} 
+//             />
+//           </div>
+//         )}
+//       </div>
+//     </header>
+//   );
+// }
+
+// export default Header;
+
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import {
   BsFillBellFill,
   BsFillEnvelopeFill,
@@ -434,96 +546,104 @@ import {
 } from 'react-icons/bs';
 
 function Header({ OpenSidebar }) {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [showIcons, setShowIcons] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [officialEmail, setOfficialEmail] = useState("");
+  const [userName, setUserName] = useState('');
+  const [officialEmail, setOfficialEmail] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Check if user is logged in
 
   useEffect(() => {
-    const email = localStorage.getItem("officialEmail");
+    const email = localStorage.getItem('officialEmail');
     setOfficialEmail(email);
 
     if (!email) {
-      navigate("/login"); // Redirect if not logged in
+      navigate('/login'); // Redirect if not logged in
       return;
     }
 
     // Fetch user details
-    fetch("http://localhost:5000/api/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    fetch('http://localhost:5000/api/user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ officialEmail: email }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.name) {
           setUserName(data.name);
+          setIsLoggedIn(true); // User is logged in
         } else {
-          console.error("No user name found for this email");
+          console.error('No user name found for this email');
         }
       })
-      .catch((err) => console.error("Failed to fetch user data", err));
+      .catch((err) => console.error('Failed to fetch user data', err));
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("officialEmail");
-    setUserName("");
-    setOfficialEmail("");
-    navigate("/login"); // Use navigate for consistency
+    localStorage.removeItem('officialEmail');
+    setUserName('');
+    setOfficialEmail('');
+    setIsLoggedIn(false); // Update logged-in state
+    navigate('/login'); // Use navigate for consistency
   };
 
   return (
-    <header className='header'>
-      <div className='header-left'>
-        <BsSearch className='icon' />
-        <input type='text' placeholder='Search' />
+    <header className="header">
+      <div className="header-left">
+        <BsSearch className="icon" />
+        <input type="text" placeholder="Search" />
       </div>
 
-      <div className='header-right desktop-icons'>
-        <BsFillBellFill className='icon' onClick={() => navigate('/queries')} />
+      <div className="header-right desktop-icons">
+        <BsFillBellFill className="icon" onClick={() => navigate('/queries')} />
 
         {/* MAIL ICON */}
-        <div 
-          className='mail-container' 
-          onClick={() => navigate('/EmailHistory')}  
-        >
-          <BsFillEnvelopeFill className='icon' />
+        <div className="mail-container" onClick={() => navigate('/EmailHistory')}>
+          <BsFillEnvelopeFill className="icon" />
         </div>
 
         {/* PROFILE */}
-        <div className='profile-container'>
+        <div className="profile-container">
           <BsPersonCircle
-            className='icon profile-icon'
+            className="icon profile-icon"
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
           />
 
           {showProfileDropdown && (
-            <div className='dropdown-card'>
-              <p className='dropdown-name'>Hello, {userName || 'User'}</p>
-              <p className='dropdown-email'>{officialEmail || 'Please login'}</p>
-              <button onClick={handleLogout} className='logout-btn'>Logout</button>
+            <div className="dropdown-card">
+              {isLoggedIn ? (
+                <>
+                  <p className="dropdown-name">Hello, {userName || 'User'}</p>
+                  <p className="dropdown-email">{officialEmail || 'Email not available'}</p>
+                </>
+              ) : (
+                <p className="dropdown-name">Please log in</p>
+              )}
+              {isLoggedIn && (
+                <button onClick={handleLogout} className="logout-btn">Logout</button>
+              )}
             </div>
           )}
         </div>
       </div>
 
       {/* Mobile menu */}
-      <div className='mobile-menu'>
+      <div className="mobile-menu">
         <button
-          className='mobile-menu-button'
+          className="mobile-menu-button"
           onClick={() => setShowIcons(!showIcons)}
         >
-          <BsThreeDotsVertical className='icon' />
+          <BsThreeDotsVertical className="icon" />
         </button>
 
         {showIcons && (
-          <div className='mobile-icons-dropdown'>
-            <BsFillBellFill className='icon' onClick={() => navigate('/queries')} />
-            <BsFillEnvelopeFill className='icon' onClick={() => navigate('/EmailHistory')} />
-            <BsPersonCircle 
-              className='icon' 
-              onClick={() => setShowProfileDropdown(!showProfileDropdown)} 
+          <div className="mobile-icons-dropdown">
+            <BsFillBellFill className="icon" onClick={() => navigate('/queries')} />
+            <BsFillEnvelopeFill className="icon" onClick={() => navigate('/EmailHistory')} />
+            <BsPersonCircle
+              className="icon"
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
             />
           </div>
         )}

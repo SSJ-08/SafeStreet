@@ -59,7 +59,7 @@ const ForgotPassword = () => {
                 transform: 'translateY(-50%)',
                 cursor: 'pointer',
                 fontSize: '20px',
-                color: '#333'
+                color: '#fff' , 
               }}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}

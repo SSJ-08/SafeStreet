@@ -213,7 +213,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
+      const response = await fetch("http://localhost:8000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -279,8 +279,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="input-group">
-            <label>Password:</label>
+          <div className='inputs'>Password: </div>
             <div style={{ position: 'relative' }}>
               <input
                 type={passwordVisible ? 'text' : 'password'}
@@ -303,8 +302,7 @@ const Register = () => {
               >
                 {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
               </span>
-            </div>
-          </div>
+            </div>
 
           <div className="input-group">
             <label>Confirm Password:</label>

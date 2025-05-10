@@ -5,7 +5,7 @@ const AllQueries = () => {
 
   useEffect(() => {
     const fetchQueries = async () => {
-      const response = await fetch("http://localhost:5000/api/get-queries");
+      const response = await fetch("http://localhost:8000/api/get-queries");
       const data = await response.json();
       setQueries(data);
     };

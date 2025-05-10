@@ -454,13 +454,34 @@ body {
   font-weight: bold;
 }
 
+.low-severity{
+  color: yellow;
+  font-weight: bold;
+}
+
 .status-resolved {
   color: rgb(15, 99, 15);
+  font-weight: bold;
 }
 
 .status-pending {
   color: orange;
+  font-weight: bold;
 }
+
+
+
+.status-in-progress {
+  color: #007bff; /* Blue for 'In Progress' */
+  font-weight: bold;
+}
+
+.status-ignored {
+  color: #a94442; /* Dark red for 'Ignored' */
+  font-weight: bold;
+}
+
+
 
 /* Responsive Map Container */
 .map-container {
@@ -551,7 +572,7 @@ body {
 }
 
 /* Welcome Page */
-.welcome-container {
+ .welcome-container {
   background: url("/welcome.jpg") no-repeat center center/cover;
   display: flex;
   justify-content: space-evenly; /* Center content by default */
@@ -593,7 +614,7 @@ body {
 .welcome-box button-container {
   display: flex;
   flex-direction: row;
-  /* margin-top: 1rem; */
+  /* margin-top: 1rem; 
   gap: 1rem;
   
 }
@@ -682,7 +703,10 @@ body {
   .welcome-box h1 {
     font-size: 1.5rem;
   }
-}
+} 
+
+
+
 .register-container {
   background: url("/register.webp") no-repeat center center/cover;
   display: flex;

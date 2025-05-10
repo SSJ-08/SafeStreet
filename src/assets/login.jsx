@@ -255,6 +255,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const[email,setEmail] = useState("");
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -273,7 +274,7 @@ const Login = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ officialEmail, password }),
@@ -313,20 +314,41 @@ const Login = () => {
             required
           />
 
-          <div className="inputs">Password:</div>
-          <div className="password-container">
-            <input
-              type={passwordVisible ? "text" : "password"}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="password-input"
-            />
-            <span onClick={togglePasswordVisibility} className="password-toggle">
-              {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
-            </span>
-          </div>
+
+          {/* <div className="inputs">Personal Email:</div>
+          <input
+            type="email"
+            placeholder="Enter your personal email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          /> */}
+
+          <div className='inputs'>Password: </div>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingRight: '30px' }}
+              />
+
+              <span
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '15px',
+                  top: '40%',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                }}
+              >
+                {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+              </span>
+            </div>
 
           {error && <p className="error-message">{error}</p>} {/* Display error message */}
 

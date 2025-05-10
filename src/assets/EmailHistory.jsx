@@ -17,7 +17,7 @@ function EmailHistory() {
   //   fetchEmails();
   // }, []);
   useEffect(() => {
-    fetch('http://localhost:5000/api/emails')
+    fetch('http://localhost:8000/api/emails')
       .then(response => response.json())
       .then(data => {
         console.log(data); // See if you get your emails here

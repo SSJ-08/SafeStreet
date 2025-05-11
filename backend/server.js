@@ -533,13 +533,12 @@ app.post("/api/register", async (req, res) => {
   try {
     const user = await User.findOne({ officialEmail });
 
-    // Check if user exists
+    
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // Validate password
-    // const isMatch = await bcrypt.compare(password, user.password);
+    
     if (password!=user.password) {
       return res.status(400).json({ message: "Incorrect password" });
     }

@@ -563,7 +563,7 @@ function Header({ OpenSidebar }) {
     }
 
     // Fetch user details
-    fetch('http://localhost:5000/api/user', {
+    fetch('http://localhost:8000/api/user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ officialEmail: email }),

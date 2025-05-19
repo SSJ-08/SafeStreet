@@ -467,6 +467,7 @@ const Report = mongoose.model("Report", {
   imageUrl: String,
   location: String,
   summary: String,
+  severity: String,
   date: Date,
   status: String,
   receivedAt: {
@@ -582,7 +583,7 @@ app.post("/api/user", async (req, res) => {
 
 
 // Send Email + Save Log
-app.post("/send-email", async (req, res) => {
+app.post("/api/send-email", async (req, res) => {
   const { to, subject, text, html } = req.body;
 
   try {
@@ -676,6 +677,51 @@ app.post("/api/verify-otp", async (req, res) => {
 });
 
 
+// app.post("/api/receive-report", async (req, res) => {
+//   try {
+//     const { imageUrl, location, summary, date, status } = req.body;
+
+//     if (!imageUrl || !location || !summary || !date) {
+//       return res.status(400).json({ message: "Missing required report fields" });
+//     }
+//         const newReport = new Report({
+//       imageUrl,
+//       location,
+//       summary,
+//       date,
+//       status: status || "Pending",
+//     });
+
+//     await newReport.save();
+//     const adminEmail = "safestreet3@gmail.com"; 
+//     const subject = "📥 New Report Received via SafeStreet App";
+//     const html = `
+//       <h2>New Report Submitted</h2>
+//       <p><strong>Location:</strong> ${location}</p>
+//       <p><strong>Summary:</strong> ${summary}</p>
+//       <p><strong>Date:</strong> ${new Date(date).toLocaleString()}</p>
+//       <p><strong>Status:</strong> ${status || "Pending"}</p>
+//       <p><strong>Image:</strong><br/><img src="${imageUrl}" style="max-width:100%; height:auto;" /></p>
+//     `;
+
+//     await sendEmail(adminEmail, subject, `New report received at ${location}`, html);
+
+//     res.status(200).json({ message: "Report received and email sent" });
+//   } catch (error) {
+//     console.error("Error receiving report:", error);
+//     res.status(500).json({ message: "Failed to receive report" });
+//   }
+// });
+
+
+function extractSeverity(summary = "") {
+  const text = summary.toLowerCase();
+  if (text.includes("critical") || text.includes("severe")) return "High";
+  if (text.includes("moderate") || text.includes("medium")) return "Medium";
+  if (text.includes("minor") || text.includes("low")) return "Low";
+  return "Medium"; // default
+}
+
 app.post("/api/receive-report", async (req, res) => {
   try {
     const { imageUrl, location, summary, date, status } = req.body;
@@ -683,29 +729,21 @@ app.post("/api/receive-report", async (req, res) => {
     if (!imageUrl || !location || !summary || !date) {
       return res.status(400).json({ message: "Missing required report fields" });
     }
-        const newReport = new Report({
+
+    
+    const severity = extractSeverity(summary);
+    const newReport = new Report({
       imageUrl,
       location,
       summary,
+      severity,
       date,
       status: status || "Pending",
     });
 
+
     await newReport.save();
-    const adminEmail = "safestreet3@gmail.com"; 
-    const subject = "📥 New Report Received via SafeStreet App";
-    const html = `
-      <h2>New Report Submitted</h2>
-      <p><strong>Location:</strong> ${location}</p>
-      <p><strong>Summary:</strong> ${summary}</p>
-      <p><strong>Date:</strong> ${new Date(date).toLocaleString()}</p>
-      <p><strong>Status:</strong> ${status || "Pending"}</p>
-      <p><strong>Image:</strong><br/><img src="${imageUrl}" style="max-width:100%; height:auto;" /></p>
-    `;
-
-    await sendEmail(adminEmail, subject, `New report received at ${location}`, html);
-
-    res.status(200).json({ message: "Report received and email sent" });
+    res.status(200).json({ message: "Report received successfully" });
   } catch (error) {
     console.error("Error receiving report:", error);
     res.status(500).json({ message: "Failed to receive report" });
@@ -723,6 +761,94 @@ app.get("/api/reports", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch reports" });
   }
 });
+
+// Password Update Route
+app.post("/api/update-password", async (req, res) => {
+  const { email, otp, newPassword, confirmPassword } = req.body;
+
+  try {
+    // Find the user by personal email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Check if the OTP is valid
+    if (!user.otp || user.otp !== otp || user.otpExpiresAt < new Date()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // Check if the passwords match
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Update the password and clear OTP
+    // user.password = newPassword;
+    // user.otp = undefined;
+    // user.otpExpiresAt = undefined;
+    // await user.save();
+
+    // server.js (correct approach)
+    await User.findOneAndUpdate(
+      { email },
+      {
+        password: newPassword,
+        otp: undefined,
+        otpExpiresAt: undefined,
+      },
+      { new: true }
+    );
+
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
+// Send OTP for Password Reset
+app.post("/api/send-reset-otp", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Find the user by personal email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Generate OTP and expiry
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
+
+    // Save OTP to the user
+    // user.otp = otp;
+    // user.otpExpiresAt = otpExpiresAt;
+    // await user.save();
+
+    // Corrected code
+    await User.findOneAndUpdate(
+      { email },
+      { otp, otpExpiresAt },
+      { new: true }
+    );
+
+
+    // Send OTP to the personal email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "SafeStreet Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
+    });
+
+    res.status(200).json({ message: "OTP sent to your personal email" });
+  } catch (error) {
+    console.error("Error sending reset OTP:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 
 

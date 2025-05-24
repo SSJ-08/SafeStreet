@@ -994,12 +994,12 @@ const DamageReports = () => {
   // Send Status Email
   const sendStatusEmail = async (report, action) => {
     try {
-      // const supervisorEmail = report.supervisorEmail || "safestreet3@gmail.com";  // Replace with actual supervisor logic
-      const supervisorEmail = "safestreet3@gmail.com"; 
+      const supervisorEmail = report.supervisorEmail || "sravanijanak@gmail.com";  
+      // const supervisorEmail = "sravanijanak@gmail.com"; 
 
       const res = await axios.post(`${BACKEND_URL}/api/send-email`, {
         to: supervisorEmail,
-        subject: `Damage Report - ${report.location} - ${action === "accept" ? "Accepted" : "Rejected"}`,
+        subject: `Damage Report - ${report.location} - ${action === "accept" ? "Accepted" : "Ignored"}`,
         text: `
           Dear Supervisor,
           
@@ -1010,13 +1010,13 @@ const DamageReports = () => {
           Status: ${action === "accept" ? "Accepted" : "Rejected"}
           Date: ${new Date(report.date).toLocaleDateString()}
           
-          Action Taken: The report has been ${action === "accept" ? "accepted for further processing" : "rejected for now"}.
+          Action Taken: The report has been ${action === "accept" ? "accepted for further processing" : "ignored for now"}.
           
           Thank you.
         `
       });
 
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200) {
         alert(`✅ Report ${action === "accept" ? "accepted" : "rejected"} successfully!`);
         fetchReports();  // Refresh the reports
       } else {
@@ -1107,7 +1107,7 @@ const DamageReports = () => {
                       className="action-button download-pdf-button"
                       style={{ marginBottom: "10px", width: "170px" }}
                     >
-                      Get Summary
+                      Download Summary
                     </button>
                     <button 
                       onClick={() => sendStatusEmail(report, "accept")} 

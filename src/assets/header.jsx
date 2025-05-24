@@ -566,7 +566,7 @@ function Header({ OpenSidebar }) {
     fetch('http://localhost:8000/api/user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ officialEmail: email }),
+      body: JSON.stringify({  email }),
     })
       .then((response) => response.json())
       .then((data) => {

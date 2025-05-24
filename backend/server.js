@@ -435,6 +435,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 
 
+
+
+
+
 const User = mongoose.model("User", UserSchema);
 
 
@@ -555,7 +559,7 @@ app.post("/api/register", async (req, res) => {
 
     // Send OTP to personal email
     const subject = "Your SafeStreet Verification Code";
-    const text = `Your verification code is: ${otp}. It is valid for 10 minutes.`;
+    const text = `Your verification code is: ${otp}. It is valid for 1 minute.`;
     await sendEmail(user.email, subject, text);
 
     res.status(200).json({ message: "Login successful, OTP sent to personal email" });
@@ -848,6 +852,7 @@ app.post("/api/send-reset-otp", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 

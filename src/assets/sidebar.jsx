@@ -32,7 +32,7 @@ const Sidebar = ({ openSidebarToggle, toggleSidebar }) => {
         </li>
         <li className="sidebar-list-item">
           <Link to="/contact">
-            <IoMdContact className="icon" /> Contact Us
+            <IoMdContact className="icon" /> Help
           </Link>
         </li>
       </ul>

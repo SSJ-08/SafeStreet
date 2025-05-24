@@ -98,7 +98,7 @@
 
 import React, { useState } from "react";
 import "../App.css"; // Assuming your styles are here
-
+import ChatBot from "./chatBot";
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -106,43 +106,10 @@ const Contact = () => {
     message: ""
   });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const queryData = {
-      ...formData,
-      date: new Date().toISOString(),
-    };
-
-    try {
-      const response = await fetch("http://localhost:5000/api/save-query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(queryData),
-      });
-
-      if (response.ok) {
-        alert("Query noted! We will get back to you soon.");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        alert("Failed to submit query. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error submitting query:", error);
-      alert("An error occurred. Please try later.");
-    }
-  };
-
-  const handleChange = (e) => {
-    setFormData({ 
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
+  
   return (
     <div className="contact-container">
-      <h1>Contact Us</h1>
+      <h1>Need Help?</h1>
       <p>For any assistance related to road damage reports, please reach out to the respective departments.</p>
 
       <div className="contact-content">
@@ -167,41 +134,9 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* RIGHT: FORM */}
         <div className="contact-form">
-          <h2>Send Us a Message</h2>
-          <form onSubmit={handleSubmit}>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your name"
-              required
-            />
-
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
-            />
-
-            <label>Message:</label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Describe your query"
-              required
-            ></textarea>
-
-            <button type="submit">Submit</button>
-          </form>
+          <h2>Chat with SafeStreet Assistant</h2>
+          <ChatBot />
         </div>
       </div>
 

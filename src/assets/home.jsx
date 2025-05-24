@@ -643,6 +643,7 @@ const Home = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [severityData, setSeverityData] = useState([]);
+  const [showCategoryCharts, setShowCategoryCharts] = useState(false); 
 
   useEffect(() => {
     const fetchReports = async () => {

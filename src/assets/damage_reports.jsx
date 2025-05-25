@@ -968,10 +968,12 @@ const DamageReports = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const filter = queryParams.get("filter") || "all";
-
+  const [ignoredReports, setIgnoredReports] = useState([]);
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(false);
+
+
 
   // Fetch Reports
   const fetchReports = async () => {
@@ -987,52 +989,101 @@ const DamageReports = () => {
     }
   };
 
+
   useEffect(() => {
     fetchReports();
   }, []);
 
   // Send Status Email
-  const sendStatusEmail = async (report, action) => {
-    try {
-      const supervisorEmail = report.supervisorEmail || "sravanijanak@gmail.com";  
-      // const supervisorEmail = "sravanijanak@gmail.com"; 
+  // const sendStatusEmail = async (report, action) => {
+  //   try {
+  //     const supervisorEmail = report.supervisorEmail || "sravanijanak@gmail.com";  
+  //     // const supervisorEmail = "sravanijanak@gmail.com"; 
+  //     const res = await axios.post(`${BACKEND_URL}/api/send-email`, {
+  //       to: supervisorEmail,
+  //       subject: `Damage Report - ${report.location} - ${action === "accept" ? "Accepted" : "Ignored"}`,
+  //       text: `
+  //         Dear Supervisor,
+          
+  //         The following action has been taken for the damage report:
+          
+  //         Location: ${report.location}
+  //         Summary: ${report.summary}
+  //         Status: ${action === "accept" ? "Accepted" : "Rejected"}
+  //         Date: ${new Date(report.date).toLocaleDateString()}
+          
+  //         Action Taken: The report has been ${action === "accept" ? "accepted for further processing" : "ignored for now"}.
+          
+  //         Thank you.
+  //       `
+  //     });
 
-      const res = await axios.post(`${BACKEND_URL}/api/send-email`, {
-        to: supervisorEmail,
-        subject: `Damage Report - ${report.location} - ${action === "accept" ? "Accepted" : "Ignored"}`,
-        text: `
-          Dear Supervisor,
-          
-          The following action has been taken for the damage report:
-          
-          Location: ${report.location}
-          Summary: ${report.summary}
-          Status: ${action === "accept" ? "Accepted" : "Rejected"}
-          Date: ${new Date(report.date).toLocaleDateString()}
-          
-          Action Taken: The report has been ${action === "accept" ? "accepted for further processing" : "ignored for now"}.
-          
-          Thank you.
-        `
-      });
 
-      if (res.status === 200) {
-        alert(`✅ Report ${action === "accept" ? "accepted" : "rejected"} successfully!`);
-        fetchReports();  // Refresh the reports
-      } else {
-        console.error("Unexpected response:", res.data);
-        alert("❌ Failed to send status update.");
-      }
-    } catch (error) {
-      console.error("❌ Status update error:", error);
-      alert("Error sending status update.");
+  //     if (res.status === 200) {
+  //       alert(`✅ Report ${action === "accept" ? "accepted" : "rejected"} successfully!`);
+        
+  //       fetchReports();  // Refresh the reports
+  //     } else {
+  //       console.error("Unexpected response:", res.data);
+  //       alert("❌ Failed to send status update.");
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Status update error:", error);
+  //     alert("Error sending status update.");
+  //   }
+  // };
+
+
+const sendStatusEmail = async (report, action) => {
+  try {
+    const supervisorEmail = report.supervisorEmail || "sravanijanak@gmail.com";
+
+    // 1. Update the report status in the backend
+    const res = await axios.post(`${BACKEND_URL}/api/update-report-status`, {
+      reportId: report._id,
+      status: action === "reject" ? "ignored" : report.status,  // Change the status to "ignored" if "reject", otherwise keep the status
+    });
+
+    // 2. Handle the "reject" (ignore) action separately
+    if (action === "reject") {
+      setIgnoredReports(prev => [...prev, report]);  // Add to ignoredReports state (frontend)
+      alert("✅ Report ignored successfully!"); // Show alert for ignored report
     }
-  };
+
+    // 3. Send email notification to the supervisor
+    const emailRes = await axios.post(`${BACKEND_URL}/api/send-email`, {
+      to: supervisorEmail,
+      subject: `Damage Report - ${report.location} - ${action === "accept" ? "Accepted" : "Ignored"}`,
+      text: `The report at location ${report.location} has been ${action === "accept" ? "accepted" : "ignored"}.`
+    });
+
+    // 4. Handle email response and finalize
+    if (emailRes.status === 200) {
+      alert(`✅ Report ${action === "accept" ? "accepted" : "ignored"} successfully!`);
+      fetchReports();  // Refresh the reports after status update
+    } else {
+      console.error("Failed to send email:", emailRes.data);
+      alert("❌ Failed to send status update.");
+    }
+  } catch (error) {
+    console.error("Error updating status:", error);
+    alert("Error sending status update.");
+  }
+};
+
+
+
 
   // Apply Filter Logic
   useEffect(() => {
     applyFilter(reports, filter);
   }, [filter, reports]);
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  
+
 
   const applyFilter = (allReports, activeFilter) => {
     let filtered;
@@ -1043,7 +1094,14 @@ const DamageReports = () => {
       filtered = allReports.filter(report => report.status?.toLowerCase() === "pending");
     } else if (activeFilter === "resolved") {
       filtered = allReports.filter(report => report.status?.toLowerCase() === "resolved");
-    } else if (activeFilter === "critical") {
+    } else if (activeFilter === "ignored") {
+        filtered = allReports.filter(
+          report =>
+            report.status?.toLowerCase() === "ignored" ||
+            report.status?.toLowerCase() === "rejected"
+        );
+    }
+    else if (activeFilter === "critical") {
       filtered = allReports.filter(report => report.summary?.toLowerCase().includes("critical") || report.severity === "High");
     } else if (activeFilter === "new") {
       filtered = allReports.filter(report => new Date(report.date) >= sevenDaysAgo);
@@ -1091,6 +1149,12 @@ const DamageReports = () => {
             </thead>
             <tbody>
               {filteredReports.map((report, index) => (
+                // <tr  key={report._id || index}
+                //   className={
+                //     normalizeDate(report.date) >= normalizeDate(sevenDaysAgo) && !handledReports.has(report._id)
+                //       ? "highlight-row"
+                //       : ""
+                //   }>
                 <tr key={report._id || index}>
                   <td>{index + 1}</td>
                   <td>{report.location}</td>
@@ -1123,6 +1187,39 @@ const DamageReports = () => {
                     >
                       Ignore
                     </button>
+
+                    {/* <button 
+                      onClick={() => {
+                        generatePDF(report);
+                        markAsHandled(report._id);
+                      }}
+                      className="action-button download-pdf-button"
+                      style={{ marginBottom: "10px", width: "170px" }}
+                    >
+                      Download Summary
+                    </button>
+
+                    <button 
+                      onClick={() => {
+                        sendStatusEmail(report, "accept");
+                        markAsHandled(report._id);
+                      }}
+                      className="action-button accept-button"
+                      style={{ marginBottom: "10px", width: "170px" }}
+                    >
+                      Accept
+                    </button>
+
+                    <button 
+                      onClick={() => {
+                        sendStatusEmail(report, "reject");
+                        markAsHandled(report._id);
+                      }}
+                      className="action-button reject-button"
+                      style={{ marginBottom: "10px", width: "170px" }}
+                    >
+                      Ignore
+                    </button> */}
                   </td>
                 </tr>
               ))}

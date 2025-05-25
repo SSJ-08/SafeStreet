@@ -394,182 +394,30 @@ body {
   font-size: 25px;
 }
 
+/* Bar Chart container */
+/* .recharts-responsive-container {
+  max-width: 800px; /* optional, constrain width 
+  margin-bottom: 40px;
+} */
 
-
-/* Damage Reports */
-
-/* .damage-reports-container {
-  padding: 1rem;
-  background-color: #aed278;
-  min-height: 80vh;
-  width: 100%;
-  box-sizing: border-box; /* Include padding in width calculation 
+/* Pie Chart container */
+/* .severity-pie-chart {
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  font-size: 20px;
+  max-width: 600px; /* optional 
 }
 
-.damage-reports-content {
+.chart-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.damage-reports-table {
-  width: 95%;
-  overflow-x: auto;
-  background-color: rgb(240, 241, 227);
-  padding: 1rem; /* Changed from fixed 20px to relative unit 
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  color: black;
-  flex: 1;
-  -webkit-overflow-scrolling: touch; 
-}
-
-.damage-reports-table table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px; /* Minimum width before horizontal scroll appears 
-}
-
-.damage-reports-table th,
-.damage-reports-table td {
-  padding: 0.75rem; /* Changed from fixed 12px to relative unit 
-  border: 1px solid #020506;
-  text-align: left;
-  word-break: break-word; /* Prevent long text from breaking layout 
-}
-
-.damage-reports-table th {
-  background-color: #edac89;
-  position: sticky;
-  top: 0; /* Makes headers stick when scrolling 
-}
-
-/* Status Indicators 
-.high-severity {
-  color: red;
-  font-weight: bold;
-}
-
-.medium-severity {
-  color: orange;
-  font-weight: bold;
-}
-
-.low-severity{
-  color: yellow;
-  font-weight: bold;
-}
-
-.status-resolved {
-  color: rgb(15, 99, 15);
-  font-weight: bold;
-}
-
-.status-pending {
-  color: orange;
-  font-weight: bold;
-}
-
-
-
-.status-in-progress {
-  color: #007bff; /* Blue for 'In Progress' 
-  font-weight: bold;
-}
-
-.status-ignored {
-  color: #a94442; /* Dark red for 'Ignored' 
-  font-weight: bold;
-}
-
-
-
-/* Responsive Map Container 
-.map-container {
-  width: 100%;
-  height: 50vh; /* Changed from fixed 400px to viewport units 
-  min-height: 250px; /* Minimum height 
-  max-height: 500px; /* Maximum height 
-  margin: 1rem 0;
-}
-
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-}
-
-/* Responsive Adjustments 
-@media screen and (max-width: 992px) {
-  .damage-reports-container {
-    padding: 0.75rem;
-    min-height: 75vh;
-  }
-  
-  .damage-reports-table {
-    padding: 0.75rem;
-  }
-  
-  .map-container {
-    height: 45vh;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .damage-reports-container {
-    padding: 0.5rem;
-    min-height: 70vh;
-  }
-  
-  .damage-reports-table th,
-  .damage-reports-table td {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-  }
-  
-  .map-container {
-    height: 40vh;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .damage-reports-container {
-    min-height: 65vh;
-  }
-  
-  .damage-reports-table {
-    padding: 0.5rem;
-    border-radius: 6px;
-  }
-  
-  .map-container {
-    height: 35vh;
-    min-height: 200px;
-    border-radius: 8px;
-  }
-  
-  .leaflet-container {
-    border-radius: 8px;
-  }
-}
-
-/* Print Styles 
-@media print {
-  .damage-reports-container {
-    background-color: white !important;
-    min-height: auto;
-    padding: 0;
-  }
-  
-  .damage-reports-table {
-    box-shadow: none;
-    page-break-inside: avoid;
-  }
-  
-  .map-container {
-    page-break-before: always;
-    height: 300px;
-  }
+  align-items: center;
+  padding: 20px;
+  color: white;
+  background-color: #1a202c; /* dark background 
 } */
 
 
@@ -733,6 +581,12 @@ body {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
 }
+
+.highlight-row {
+  background-color: #fff7cc; /* light yellow */
+  transition: background-color 0.3s ease;
+}
+
 
 /* Responsive Map Container */
 .map-container {
@@ -1477,7 +1331,7 @@ font-size: 20px;
 
 /* home updated */
 /* Axis tick labels */
-
+/* 
 .recharts-cartesian-axis-tick text {
 
   fill: #fff !important;
@@ -1500,9 +1354,9 @@ font-size: 20px;
 
 
 
-/* X-axis labels */
+/* X-axis labels 
 
-.recharts-xAxis .recharts-cartesian-axis-tick-value {
+ .recharts-xAxis .recharts-cartesian-axis-tick-value {
 
   fill: #fff !important;
 
@@ -1542,7 +1396,7 @@ font-size: 20px;
 
   color: #ffffff !important; /* <-- ensures individual items inside are white */
 
-}
+} 
 
 
 

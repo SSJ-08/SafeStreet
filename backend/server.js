@@ -33,6 +33,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   officialEmail: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   otp: { type: String },
+  
   otpExpiresAt: { type: Date }
 });
 const User = mongoose.model("User", UserSchema);
@@ -67,6 +68,7 @@ const Report = mongoose.model("Report", {
   severity: String,
   date: Date,
   status: String,
+  seen: { type: Boolean, default: false },
   receivedAt: {
     type: Date,
     default: Date.now,
@@ -348,11 +350,6 @@ app.post("/api/receive-report", async (req, res) => {
   }
 });
 
-
-
-
-
-
 // Get all received reports
 app.get("/api/reports", async (req, res) => {
   try {
@@ -452,19 +449,26 @@ app.post("/api/send-reset-otp", async (req, res) => {
 });
 
 
-// Update report status
 app.post("/api/update-report-status", async (req, res) => {
-  const { reportId, status } = req.body;
+  const { reportId, status, seen } = req.body;
 
   try {
     if (!reportId || !status) {
       return res.status(400).json({ message: "Missing reportId or status" });
     }
 
+    // Prepare the fields to update
+    const updateFields = { status };
+
+    // Only set 'seen' if it is explicitly passed in the request body
+    if (typeof seen !== "undefined") {
+      updateFields.seen = seen;
+    }
+
     const updated = await Report.findByIdAndUpdate(
       reportId,
-      { status },
-      { new: true }
+      updateFields,
+      { new: true }  // Returns the updated document
     );
 
     if (!updated) {

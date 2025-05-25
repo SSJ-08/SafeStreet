@@ -205,7 +205,7 @@ const Register = () => {
 
     // Validate official email domain
     const allowedDomains = ["safestreet.org"];
-    const emailDomain = officialEmail.split("@")[1];
+    const emailDomain = officialEmail.split("@")[1]||" ";
 
     if (!allowedDomains.includes(emailDomain)) {
       setError("Only official emails  domains are allowed.");
@@ -279,7 +279,7 @@ const Register = () => {
             />
           </div>
 
-          <div className='inputs'>Password: </div>
+          {/* <div className='inputs'>Password: </div>
             <div style={{ position: 'relative' }}>
               <input
                 type={passwordVisible ? 'text' : 'password'}
@@ -302,7 +302,37 @@ const Register = () => {
               >
                 {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
               </span>
-            </div>
+            </div> */}
+
+
+
+            <div className="input-group">
+            <label>Password:</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingRight: '30px' }}
+              />
+              <span
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '15px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                }}
+              >
+                {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+              </span>
+            </div>
+          </div>
+
 
           <div className="input-group">
             <label>Confirm Password:</label>

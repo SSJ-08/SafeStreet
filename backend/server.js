@@ -526,14 +526,14 @@ app.post("/api/classify", async (req, res) => {
 
 app.get('/api/reports/new', async (req, res) => {
   try {
-    const newReports = await Report.find({ isNew: true });
+    // Fetch all reports whose status is "Pending" (new reports)
+    const newReports = await Report.find({ status: "Pending" });
     res.status(200).json(newReports);
   } catch (error) {
     console.error("Error fetching new reports:", error);
     res.status(500).json({ message: "Failed to fetch new reports" });
   }
 });
-
 
 
 // Server Start

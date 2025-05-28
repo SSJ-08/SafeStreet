@@ -27,18 +27,23 @@ const NotificationsPage = () => {
 
   if (newReports.length === 0) return <p>No new damage reports.</p>;
 
-  return (
-    <div>
-      <h2>New Damage Reports</h2>
-      <ul>
-        {newReports.map((report) => (
-          <li key={report._id}>
-            🛠️ Damage report received at {new Date(report.date).toLocaleString()} - Location: {report.location}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+ return (
+  <div className="notifications-container">
+    <h2>🛠️ New Damage Reports</h2>
+    <ul className="notifications-list">
+      {newReports.map((report) => (
+        <li className="notification-item" key={report._id}>
+          <span className="notification-icon">🛠️</span>
+          <span className="notification-text">
+            Damage report received at {new Date(report.date).toLocaleString()}<br />
+            Location: {report.location}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
 };
 
 export default NotificationsPage;

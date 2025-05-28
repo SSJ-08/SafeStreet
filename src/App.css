@@ -85,27 +85,65 @@ body {
   margin-top: 10px;
 }
 
-.notification-container {
-  position: relative;
-  display: inline-block;
+/* App.css */
+
+/* Page container */
+.notifications-container {
+  background-color: #121212;
+  color: #f0f0f0;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
 }
 
-.notification-badge {
-  position: absolute;
-  top: -4px; /* Instead of 0px */
-  right: -4px; /* Instead of 0px */
-  background-color: red;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid white; /* Optional: better visibility if icon background isn't white */
+/* Heading */
+.notifications-container h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4fc3f7;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #4fc3f7;
+  padding-bottom: 0.5rem;
 }
 
+/* List container */
+.notifications-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
 
+/* Individual report card */
+.notification-item {
+  background-color: #1e1e2f;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
 
-.notification-message .timestamp {
-  font-size: 11px;
-  opacity: 0.8;
+.notification-item:hover {
+  background-color: #29293d;
+  transform: translateY(-3px);
+}
+
+/* Emoji icon */
+.notification-icon {
+  font-size: 1.5rem;
+  color: #ff8a65;
+  margin-top: 0.2rem;
+}
+
+/* Text */
+.notification-text {
+  line-height: 1.4;
+  font-size: 0.95rem;
+  color: #e0e0e0;
 }
 
 

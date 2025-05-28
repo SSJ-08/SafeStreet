@@ -909,7 +909,9 @@ import { AiFillAlert } from "react-icons/ai";
 import { SlCalender } from "react-icons/sl";
 import { BsEyeSlash } from "react-icons/bs";
 import DatePicker from "react-datepicker";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 import "react-datepicker/dist/react-datepicker.css";
+
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -953,6 +955,7 @@ const Home = () => {
   const resolved = filteredReports.filter(r => r.status?.toLowerCase() === "resolved").length;
   const critical = filteredReports.filter(r => r.summary?.toLowerCase().includes("critical")).length;
   const ignored = filteredReports.filter(r => r.status?.toLowerCase() === "rejected" || r.status?.toLowerCase() === "ignored").length;
+  const accept = filteredReports.filter(r => r.status?.toLowerCase() === "accepted").length;
   const COLORS = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#8884d8"];
 
   const past7Days = filteredReports.filter(report => {
@@ -983,6 +986,12 @@ const Home = () => {
       report.status?.toLowerCase() === "ignored"
   );
 
+
+   const accepetReports = reports.filter(
+    (report) =>
+      report.status?.toLowerCase() === "accepted" ||
+      report.status?.toLowerCase() === "approved"
+  );
   const ignoredReportsByCategory = ignoredReports.reduce((acc, report) => {
     const summary = report.summary?.toLowerCase() || "";
     const category =
@@ -999,7 +1008,7 @@ const Home = () => {
   // Generate Pie Chart Data for Severity
   const generateSeverityData = (reports) => {
     const severityCounts = reports.reduce((acc, report) => {
-      const severity = report.severity || "Unknown";
+      const severity = report.severity || "Low";
       acc[severity] = (acc[severity] || 0) + 1;
       return acc;
     }, {});
@@ -1020,12 +1029,12 @@ const Home = () => {
 
       {/* Filter Controls */}
       <div className="filters" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+        {/* <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
           <option value="all">All Statuses</option>
           <option value="pending">Pending</option>
           <option value="resolved">Resolved</option>
           <option value="critical">Critical</option>
-        </select>
+        </select> */}
 
         <div>
           <label>From: </label>
@@ -1079,6 +1088,15 @@ const Home = () => {
           </div>
           <h1>{past7Days}</h1>
         </div>
+
+         <div className="card">
+          <div className="card-inner" onClick={() => navigate("/damage_reports?filter=accept")}>
+            <h3>Accepted Reports</h3>
+            <AiOutlineCheckCircle  className="card_icon" />
+          </div>
+          <h1>{accept}</h1>
+        </div>
+
 
         <div className="card">
           <div className="card-inner" onClick={() => navigate("/damage_reports?filter=ignored")}>

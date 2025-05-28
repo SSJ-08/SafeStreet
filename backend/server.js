@@ -16,6 +16,38 @@ const PORT = 8000;
 app.use(cors());
 app.use(express.json());
 
+const natural = require("natural");
+const classifier = new natural.BayesClassifier();
+
+// Train the classifier with sample data (replace this with your actual training data)
+classifier.addDocument("how do I view my reports", "view_reports");
+classifier.addDocument("show me submitted damages", "view_reports");
+classifier.addDocument("reset my password", "password_reset");
+classifier.addDocument("I forgot my login password", "password_reset");
+classifier.addDocument("need help with email", "email_help");
+classifier.addDocument("why didn't I get a notification", "email_help");
+classifier.addDocument("can you help me", "help");
+classifier.addDocument("I need support", "help");
+classifier.addDocument("hello", "greeting");
+classifier.addDocument("hi there", "greeting");
+classifier.addDocument("thank you", "gratitude");
+classifier.addDocument("thanks a lot", "gratitude");
+classifier.addDocument("I forgot my password", "password_reset");
+classifier.addDocument("Can't remember my password", "password_reset");
+classifier.addDocument("Need to change password", "password_reset");
+
+classifier.addDocument("Show my reports", "view_reports");
+classifier.addDocument("Where are my submitted issues?", "view_reports");
+
+classifier.addDocument("My name is John", "name_intro");
+classifier.addDocument("I'm Alice", "name_intro");
+classifier.addDocument("This is Bob", "name_intro");
+
+
+// Train the classifier
+classifier.train();
+
+
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -275,44 +307,6 @@ app.post("/api/verify-otp", async (req, res) => {
   }
 });
 
-
-// app.post("/api/receive-report", async (req, res) => {
-//   try {
-//     const { imageUrl, location, summary, date, status } = req.body;
-
-//     if (!imageUrl || !location || !summary || !date) {
-//       return res.status(400).json({ message: "Missing required report fields" });
-//     }
-//         const newReport = new Report({
-//       imageUrl,
-//       location,
-//       summary,
-//       date,
-//       status: status || "Pending",
-//     });
-
-//     await newReport.save();
-//     const adminEmail = "safestreet3@gmail.com"; 
-//     const subject = "📥 New Report Received via SafeStreet App";
-//     const html = `
-//       <h2>New Report Submitted</h2>
-//       <p><strong>Location:</strong> ${location}</p>
-//       <p><strong>Summary:</strong> ${summary}</p>
-//       <p><strong>Date:</strong> ${new Date(date).toLocaleString()}</p>
-//       <p><strong>Status:</strong> ${status || "Pending"}</p>
-//       <p><strong>Image:</strong><br/><img src="${imageUrl}" style="max-width:100%; height:auto;" /></p>
-//     `;
-
-//     await sendEmail(adminEmail, subject, `New report received at ${location}`, html);
-
-//     res.status(200).json({ message: "Report received and email sent" });
-//   } catch (error) {
-//     console.error("Error receiving report:", error);
-//     res.status(500).json({ message: "Failed to receive report" });
-//   }
-// });
-
-
 function extractSeverity(summary = "") {
   const text = summary.toLowerCase();
   if (text.includes("critical") || text.includes("severe")) return "High";
@@ -479,6 +473,64 @@ app.post("/api/update-report-status", async (req, res) => {
   } catch (error) {
     console.error("Error updating report status:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// NLP Classification Route
+app.post("/api/classify", async (req, res) => {
+  const { text } = req.body;
+
+  if (!text) {
+    return res.status(400).json({ message: "Text input is required" });
+  }
+
+  try {
+    // Classify the user's input
+    const classification = classifier.classify(text);
+    
+    // Send back the classification result
+    res.status(200).json({ intent: classification });
+  } catch (error) {
+    console.error("Error classifying text:", error);
+    res.status(500).json({ message: "Failed to classify text" });
+  }
+});
+
+
+// Get the most recent report to check for new notifications
+// app.get("/api/reports/latest", async (req, res) => {
+//   try {
+//     const latestReport = await Report.findOne().sort({ receivedAt: -1 });
+
+//     if (!latestReport) {
+//       return res.status(200).json({ hasNew: false });
+//     }
+
+//     // If it hasn't been marked as seen, return it as a new report
+//     if (!latestReport.seen) {
+//       return res.status(200).json({
+//         hasNew: true,
+//         latestReport: {
+//           date: latestReport.receivedAt
+//         }
+//       });
+//     }
+
+//     res.status(200).json({ hasNew: false });
+//   } catch (error) {
+//     console.error("Error fetching latest report:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+
+app.get('/api/reports/new', async (req, res) => {
+  try {
+    const newReports = await Report.find({ isNew: true });
+    res.status(200).json(newReports);
+  } catch (error) {
+    console.error("Error fetching new reports:", error);
+    res.status(500).json({ message: "Failed to fetch new reports" });
   }
 });
 

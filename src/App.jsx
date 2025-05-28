@@ -167,7 +167,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EmailHistory from "./assets/EmailHistory";
 import AllQueries from "./assets/queries";
 import ChatBot from "./assets/chatBot";
-
+import NotificationsPage from "./assets/NotificationsPage";
 function App() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -225,6 +225,7 @@ function App() {
             <Route path="/EmailHistory" element={<EmailHistory />} />
             <Route path="/queries" element={<AllQueries />} />
             <Route path="/chatBot" element={<ChatBot />} />
+            <Route path="/notifications" element={<NotificationsPage/>} />
           </Routes>
         </main>
       </div>
